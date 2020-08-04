@@ -1,0 +1,30 @@
+1. ok, sys.executable in just python in terminal gives me /Users/hotte/miniconda2/envs/jupyterlab/bin/python
+(after I source activate the conda env)
+Within the notebook I do the same and it gives me /Users/hotte/miniconda2/bin/python .
+Which is pretty puzzling? Any ideas why the notebook itself does not point to my environment that I started it from? (notebook and everything WAS installed from within the environment)
+
+=====> sys.executable in terminal gives:
+       /home/vasanth/Documents/anaconda3/envs/tf_20_env/bin/python 
+=====> sys.executable in jupyter gives:
+       /snap/jupyter/6/bin/python
+=====> jupyter kernelspec list in terminal gives
+       /snap/jupyter/6/lib/python3.7/site-packages/ipykernel/resources
+=====> from jupyter_core.paths import jupyter_data_dir
+       print(jupyter_data_dir())
+       /home/vasanth/snap/jupyter/6/.local/share/jupyter
+       
+
+2. There'll be a kernelspec somewhere which is pointing it to a different Python. We really need to redesign that system. Run jupyter kernelspec list in a terminal to see what kernels it knows about. It will point you to directories which contain kernel.json files - one of those will be pointing it to the wrong Python.
+====> There is no kernel.json in the directories mentioned after running jupyter kernelspec list
+      "/snap/jupyter/6/lib/python3.7/site-packages/ipykernel/resources"
+      There is no kernel.json in any nearby directories as well
+
+3. Three paths where kernelspec could be:
+====> System: 
+     /usr/share/jupyter/kernels
+     /usr/local/share/jupyter/kernels
+=====> Env:
+      {sys.prefix}/share/jupyter/kernels
+      
+=====> User:
+       ~/.local/share/jupyter/kernels 
